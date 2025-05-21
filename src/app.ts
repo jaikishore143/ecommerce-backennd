@@ -2,9 +2,11 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { rateLimit } from 'express-rate-limit';
+import swaggerUi from 'swagger-ui-express';
 import routes from './routes';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 import config from './config';
+import swaggerSpec from './config/swagger';
 
 // Create Express app
 const app = express();
@@ -40,6 +42,13 @@ app.use(express.urlencoded({ extended: true }));
 
 // API routes
 app.use('/api', routes);
+
+// Swagger documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get('/api-docs.json', (req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
 
 // Health check endpoint
 app.get('/health', (req: Request, res: Response) => {

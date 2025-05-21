@@ -18,7 +18,7 @@ export const OrdersService = {
    */
   getAllOrders: async (
     pagination: PaginationParams = {}
-  ): Promise<PaginatedResponse<OrderResponse>> {
+  ): Promise<PaginatedResponse<OrderResponse>> => {
     const { page = 1, limit = 10 } = pagination;
     const skip = (page - 1) * limit;
 
@@ -53,7 +53,7 @@ export const OrdersService = {
   getUserOrders: async (
     userId: string,
     pagination: PaginationParams = {}
-  ): Promise<PaginatedResponse<OrderResponse>> {
+  ): Promise<PaginatedResponse<OrderResponse>> => {
     const { page = 1, limit = 10 } = pagination;
     const skip = (page - 1) * limit;
 

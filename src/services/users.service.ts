@@ -19,7 +19,7 @@ export const UsersService = {
    */
   getAllUsers: async (
     pagination: PaginationParams = {}
-  ): Promise<PaginatedResponse<UserResponse>> {
+  ): Promise<PaginatedResponse<UserResponse>> => {
     const { page = 1, limit = 10 } = pagination;
     const skip = (page - 1) * limit;
 

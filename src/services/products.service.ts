@@ -22,7 +22,7 @@ export const ProductsService = {
   getAllProducts: async (
     filters: ProductFilters = {},
     pagination: PaginationParams = {}
-  ): Promise<PaginatedResponse<ProductResponse>> {
+  ): Promise<PaginatedResponse<ProductResponse>> => {
     const { page = 1, limit = 10 } = pagination;
     const skip = (page - 1) * limit;
 
@@ -284,7 +284,40 @@ export const ProductsService = {
     });
 
     // Get complete product with all relations
-    return this.getProductById(product.id);
+    return await prisma.product.findUnique({
+      where: { id: product.id },
+      include: {
+        images: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+        subcategory: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+        productTags: {
+          include: {
+            tag: true,
+          },
+        },
+        specifications: true,
+      },
+    }).then(product => {
+      if (!product) {
+        throw new ApiError('Product not found', 404);
+      }
+      return {
+        ...product,
+        tags: product.productTags.map((pt) => pt.tag.name),
+      };
+    });
   },
 
   /**
@@ -413,7 +446,40 @@ export const ProductsService = {
     });
 
     // Get updated product
-    return this.getProductById(id);
+    return await prisma.product.findUnique({
+      where: { id },
+      include: {
+        images: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+        subcategory: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+        productTags: {
+          include: {
+            tag: true,
+          },
+        },
+        specifications: true,
+      },
+    }).then(product => {
+      if (!product) {
+        throw new ApiError('Product not found', 404);
+      }
+      return {
+        ...product,
+        tags: product.productTags.map((pt) => pt.tag.name),
+      };
+    });
   },
 
   /**

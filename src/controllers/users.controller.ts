@@ -13,21 +13,22 @@ export const UsersController = {
   getAllUsers: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { page, limit } = req.query;
-      
+
       const pagination = {
         page: page ? parseInt(page as string) : 1,
         limit: limit ? parseInt(limit as string) : 10,
       };
-      
+
       const result = await UsersService.getAllUsers(pagination);
-      
-      res.status(200).json({
+
+      return res.status(200).json({
         success: true,
         message: 'Users retrieved successfully',
         data: result,
       });
     } catch (error) {
       next(error);
+      return undefined;
     }
   },
 
@@ -39,14 +40,15 @@ export const UsersController = {
     try {
       const { id } = req.params;
       const result = await UsersService.getUserById(id);
-      
-      res.status(200).json({
+
+      return res.status(200).json({
         success: true,
         message: 'User retrieved successfully',
         data: result,
       });
     } catch (error) {
       next(error);
+      return undefined;
     }
   },
 
@@ -57,14 +59,15 @@ export const UsersController = {
   createUser: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await UsersService.createUser(req.body);
-      
-      res.status(201).json({
+
+      return res.status(201).json({
         success: true,
         message: 'User created successfully',
         data: result,
       });
     } catch (error) {
       next(error);
+      return undefined;
     }
   },
 
@@ -76,14 +79,15 @@ export const UsersController = {
     try {
       const { id } = req.params;
       const result = await UsersService.updateUser(id, req.body);
-      
-      res.status(200).json({
+
+      return res.status(200).json({
         success: true,
         message: 'User updated successfully',
         data: result,
       });
     } catch (error) {
       next(error);
+      return undefined;
     }
   },
 
@@ -95,13 +99,14 @@ export const UsersController = {
     try {
       const { id } = req.params;
       await UsersService.deleteUser(id);
-      
-      res.status(200).json({
+
+      return res.status(200).json({
         success: true,
         message: 'User deleted successfully',
       });
     } catch (error) {
       next(error);
+      return undefined;
     }
   },
 
@@ -117,9 +122,9 @@ export const UsersController = {
           message: 'Unauthorized',
         });
       }
-      
+
       const result = await UsersService.getUserAddresses(req.user.id);
-      
+
       res.status(200).json({
         success: true,
         message: 'Addresses retrieved successfully',
@@ -142,10 +147,10 @@ export const UsersController = {
           message: 'Unauthorized',
         });
       }
-      
+
       const { id } = req.params;
       const result = await UsersService.getAddressById(id, req.user.id);
-      
+
       res.status(200).json({
         success: true,
         message: 'Address retrieved successfully',
@@ -168,9 +173,9 @@ export const UsersController = {
           message: 'Unauthorized',
         });
       }
-      
+
       const result = await UsersService.createAddress(req.user.id, req.body);
-      
+
       res.status(201).json({
         success: true,
         message: 'Address created successfully',
@@ -193,10 +198,10 @@ export const UsersController = {
           message: 'Unauthorized',
         });
       }
-      
+
       const { id } = req.params;
       const result = await UsersService.updateAddress(id, req.user.id, req.body);
-      
+
       res.status(200).json({
         success: true,
         message: 'Address updated successfully',
@@ -219,10 +224,10 @@ export const UsersController = {
           message: 'Unauthorized',
         });
       }
-      
+
       const { id } = req.params;
       await UsersService.deleteAddress(id, req.user.id);
-      
+
       res.status(200).json({
         success: true,
         message: 'Address deleted successfully',
@@ -244,9 +249,9 @@ export const UsersController = {
           message: 'Unauthorized',
         });
       }
-      
+
       const result = await UsersService.getUserWishlist(req.user.id);
-      
+
       res.status(200).json({
         success: true,
         message: 'Wishlist retrieved successfully',
@@ -269,18 +274,18 @@ export const UsersController = {
           message: 'Unauthorized',
         });
       }
-      
+
       const { productId } = req.body;
-      
+
       if (!productId) {
         return res.status(400).json({
           success: false,
           message: 'Product ID is required',
         });
       }
-      
+
       const result = await UsersService.addToWishlist(req.user.id, productId);
-      
+
       res.status(200).json({
         success: true,
         message: 'Product added to wishlist successfully',
@@ -303,10 +308,10 @@ export const UsersController = {
           message: 'Unauthorized',
         });
       }
-      
+
       const { productId } = req.params;
       await UsersService.removeFromWishlist(req.user.id, productId);
-      
+
       res.status(200).json({
         success: true,
         message: 'Product removed from wishlist successfully',
@@ -328,9 +333,9 @@ export const UsersController = {
           message: 'Unauthorized',
         });
       }
-      
+
       await UsersService.clearWishlist(req.user.id);
-      
+
       res.status(200).json({
         success: true,
         message: 'Wishlist cleared successfully',

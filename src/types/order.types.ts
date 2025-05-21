@@ -25,6 +25,7 @@ export interface OrderItemRequest {
 
 export interface OrderResponse {
   id: string;
+  userId: string;
   orderNumber: string;
   status: OrderStatus;
   items: {
