@@ -191,7 +191,7 @@ async function main() {
   const englishWillowCategory = await prisma.category.findUnique({
     where: { slug: 'cricket-bats' },
   });
-  
+
   const englishWillowSubcategory = await prisma.subcategory.findUnique({
     where: { slug: 'english-willow' },
   });
@@ -261,22 +261,29 @@ async function main() {
     });
 
     if (featuredTag && newArrivalTag && professionalTag) {
-      await prisma.productTag.createMany({
-        data: [
-          {
-            productId: product.id,
-            tagId: featuredTag.id,
-          },
-          {
-            productId: product.id,
-            tagId: newArrivalTag.id,
-          },
-          {
-            productId: product.id,
-            tagId: professionalTag.id,
-          },
-        ],
-      });
+      // Create product tags one by one using upsert to handle duplicates
+      const tagIds = [featuredTag.id, newArrivalTag.id, professionalTag.id];
+
+      for (const tagId of tagIds) {
+        // Skip creation if the relationship already exists
+        const existingTag = await prisma.productTag.findUnique({
+          where: {
+            productId_tagId: {
+              productId: product.id,
+              tagId: tagId
+            }
+          }
+        });
+
+        if (!existingTag) {
+          await prisma.productTag.create({
+            data: {
+              productId: product.id,
+              tagId: tagId
+            }
+          });
+        }
+      }
     }
   }
   console.log('Sample product created');
