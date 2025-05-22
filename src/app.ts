@@ -26,7 +26,7 @@ app.use(
 
 // Apply rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 1 * 60 * 1000, // 15 minutes
   limit: 100, // 100 requests per windowMs
   standardHeaders: true,
   legacyHeaders: false,

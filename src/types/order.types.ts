@@ -1,5 +1,4 @@
 import { OrderStatus, PaymentStatus } from '@prisma/client';
-import { Decimal } from '@prisma/client/runtime/library';
 
 // Order types
 export interface CreateOrderRequest {

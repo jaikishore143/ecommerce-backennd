@@ -71,8 +71,8 @@ model Product {
   id              String        @id @default(uuid())
   name            String
   description     String
-  price           Decimal       @db.Decimal(10, 2)
-  salePrice       Decimal?      @db.Decimal(10, 2)
+  price           Float         // Changed from Decimal to Float
+  salePrice       Float?        // Changed from Decimal to Float
   stock           Int           @default(0)
   images          ProductImage[]
   categoryId      String
@@ -148,10 +148,10 @@ model Order {
   orderNumber   String      @unique
   status        OrderStatus @default(PENDING)
   items         OrderItem[]
-  subtotal      Decimal     @db.Decimal(10, 2)
-  tax           Decimal     @db.Decimal(10, 2)
-  shipping      Decimal     @db.Decimal(10, 2)
-  total         Decimal     @db.Decimal(10, 2)
+  subtotal      Float       // Changed from Decimal to Float
+  tax           Float       // Changed from Decimal to Float
+  shipping      Float       // Changed from Decimal to Float
+  total         Float       // Changed from Decimal to Float
   shippingAddressId String?
   shippingAddress   Address?  @relation(fields: [shippingAddressId], references: [id])
   paymentMethod String?
@@ -170,8 +170,8 @@ model OrderItem {
   productId   String
   product     Product  @relation(fields: [productId], references: [id])
   name        String
-  price       Decimal  @db.Decimal(10, 2)
-  salePrice   Decimal? @db.Decimal(10, 2)
+  price       Float    // Changed from Decimal to Float
+  salePrice   Float?   // Changed from Decimal to Float
   quantity    Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

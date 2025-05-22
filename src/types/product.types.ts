@@ -1,4 +1,4 @@
-import { Decimal } from '@prisma/client/runtime/library';
+// No need to import Decimal anymore as we're using native number type
 
 // Product types
 export interface CreateProductRequest {
