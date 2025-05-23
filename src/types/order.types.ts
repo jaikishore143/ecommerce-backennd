@@ -31,14 +31,14 @@ export interface OrderResponse {
     id: string;
     productId: string;
     name: string;
-    price: Decimal;
-    salePrice?: Decimal | null;
+    price: number;
+    salePrice?: number | null;
     quantity: number;
   }[];
-  subtotal: Decimal;
-  tax: Decimal;
-  shipping: Decimal;
-  total: Decimal;
+  subtotal: number;
+  tax: number;
+  shipping: number;
+  total: number;
   shippingAddress?: {
     id: string;
     addressLine1: string;

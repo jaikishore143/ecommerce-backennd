@@ -6,6 +6,7 @@ import ordersRoutes from './orders.routes';
 import usersRoutes from './users.routes';
 import addressesRoutes from './addresses.routes';
 import wishlistRoutes from './wishlist.routes';
+import cartRoutes from './cart.routes';
 
 const router = Router();
 
@@ -23,7 +24,8 @@ router.get('/', (req, res) => {
       '/orders',
       '/users',
       '/addresses',
-      '/wishlist'
+      '/wishlist',
+      '/cart'
     ]
   });
 });
@@ -36,5 +38,6 @@ router.use('/orders', ordersRoutes);
 router.use('/users', usersRoutes);
 router.use('/addresses', addressesRoutes);
 router.use('/wishlist', wishlistRoutes);
+router.use('/cart', cartRoutes);
 
 export default router;

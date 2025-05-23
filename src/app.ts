@@ -25,14 +25,14 @@ app.use(
 );
 
 // Apply rate limiting
-const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 15 minutes
-  limit: 100, // 100 requests per windowMs
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: 'Too many requests from this IP, please try again after 15 minutes',
-});
-app.use(limiter);
+// const limiter = rateLimit({
+//   windowMs: 1 * 60 * 1000, // 15 minutes
+//   limit: 100, // 100 requests per windowMs
+//   standardHeaders: true,
+//   legacyHeaders: false,
+//   message: 'Too many requests from this IP, please try again after 15 minutes',
+// });
+// app.use(limiter);
 
 // Parse JSON request body
 app.use(express.json());

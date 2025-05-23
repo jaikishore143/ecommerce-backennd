@@ -33,6 +33,7 @@ model User {
   reviews        Review[]
   addresses      Address[]
   wishlistItems  WishlistItem[]
+  cart           Cart?
 }
 
 enum Role {
@@ -91,6 +92,7 @@ model Product {
   productTags     ProductTag[]
   specifications  Specification[]
   wishlistItems   WishlistItem[]
+  cartItems       CartItem[]
 
   @@index([categoryId])
   @@index([subcategoryId])
@@ -137,6 +139,33 @@ model Specification {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([productId])
+}
+
+// Cart models
+model Cart {
+  id        String     @id @default(uuid())
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([userId])
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  cartId    String
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([cartId, productId])
+  @@index([cartId])
   @@index([productId])
 }
 

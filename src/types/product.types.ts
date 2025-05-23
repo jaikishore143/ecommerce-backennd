@@ -37,8 +37,8 @@ export interface ProductResponse {
   id: string;
   name: string;
   description: string;
-  price: Decimal;
-  salePrice?: Decimal | null;
+  price: number;
+  salePrice?: number | null;
   stock: number;
   images: {
     id: string;
