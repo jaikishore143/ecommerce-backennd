@@ -104,7 +104,7 @@ const options: swaggerJsdoc.Options = {
       description: 'API documentation for Cricket Glow Express e-commerce platform',
       contact: { name: 'API Support', email: 'support@cricketglow.com' }
     },
-    servers: [{ url: `http://localhost:${config.port}/api`, description: 'Development server' }],
+    servers: [{ url: `https://ecommerce-backennd-droq.onrender.com/api`, description: 'Production server' }],
     components: {
       securitySchemes: {
         bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }
