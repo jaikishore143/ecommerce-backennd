@@ -2,15 +2,20 @@ import prisma from '../lib/prisma';
 import { hashPassword, comparePassword } from '../utils/password.utils';
 import { generateAccessToken, generateRefreshToken } from '../utils/jwt.utils';
 import { ApiError } from '../middleware/error.middleware';
-import { 
-  LoginRequest, 
-  RegisterRequest, 
-  AuthResponse, 
+import {
+  LoginRequest,
+  RegisterRequest,
+  AuthResponse,
   TokenPayload,
   RefreshTokenRequest,
-  ChangePasswordRequest
+  ChangePasswordRequest,
+  GoogleLoginRequest
 } from '../types/auth.types';
 import { Role } from '@prisma/client';
+import { OAuth2Client } from 'google-auth-library';
+
+// Initialize Google OAuth client
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 /**
  * Authentication service
@@ -123,6 +128,97 @@ export const AuthService = {
         role: user.role,
       },
     };
+  },
+
+  /**
+   * Google OAuth login
+   */
+  googleLogin: async (data: GoogleLoginRequest): Promise<AuthResponse> => {
+    try {
+      // Verify the Google token
+      const ticket = await googleClient.verifyIdToken({
+        idToken: data.credential,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+
+      const payload = ticket.getPayload();
+      if (!payload) {
+        throw new ApiError('Invalid Google token', 401);
+      }
+
+      const { email, given_name, family_name, sub: googleId } = payload;
+
+      if (!email) {
+        throw new ApiError('Email not provided by Google', 400);
+      }
+
+      // Check if user already exists
+      let user = await prisma.user.findUnique({
+        where: { email },
+      });
+
+      // If user doesn't exist, create a new one
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            email,
+            firstName: given_name || '',
+            lastName: family_name || '',
+            password: '', // No password for Google users
+            role: Role.CUSTOMER,
+            isActive: true,
+            googleId,
+          },
+        });
+      } else {
+        // Update Google ID if not set
+        if (!user.googleId) {
+          user = await prisma.user.update({
+            where: { id: user.id },
+            data: { googleId },
+          });
+        }
+      }
+
+      // Check if user is active
+      if (!user.isActive) {
+        throw new ApiError('User account is inactive', 401);
+      }
+
+      // Generate tokens
+      const tokenPayload: TokenPayload = {
+        userId: user.id,
+        email: user.email,
+        role: user.role,
+      };
+
+      const accessToken = generateAccessToken(tokenPayload);
+      const refreshToken = generateRefreshToken(tokenPayload);
+
+      // Update user with refresh token
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { refreshToken },
+      });
+
+      return {
+        accessToken,
+        refreshToken,
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+        },
+      };
+    } catch (error) {
+      console.error('Google login error:', error);
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw new ApiError('Google authentication failed', 401);
+    }
   },
 
   /**

@@ -72,6 +72,50 @@ router.post('/register', controllerWrapper(AuthController.register));
 
 /**
  * @swagger
+ * /auth/google:
+ *   post:
+ *     summary: Google OAuth login
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - credential
+ *             properties:
+ *               credential:
+ *                 type: string
+ *                 description: Google OAuth credential token
+ *     responses:
+ *       200:
+ *         description: Google login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     accessToken:
+ *                       type: string
+ *                     refreshToken:
+ *                       type: string
+ *                     user:
+ *                       $ref: '#/components/schemas/User'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ */
+router.post('/google', controllerWrapper(AuthController.googleLogin));
+
+/**
+ * @swagger
  * /auth/login:
  *   post:
  *     summary: Login a user

@@ -37,3 +37,7 @@ export interface ChangePasswordRequest {
   currentPassword: string;
   newPassword: string;
 }
+
+export interface GoogleLoginRequest {
+  credential: string;
+}
